@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DarkWatch — SME Credential Leak Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <!-- Google Fonts: Syne (display) + IBM Plex Mono (data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <span class="nav-logo">
+        <span class="logo-icon">&#9670;</span>
+        DarkWatch
+      </span>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero / Search Section ───────────────────────────────────────────── -->
+  <main>
+    <section class="hero">
+      <div class="hero-bg-grid" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <div class="badge">THREAT INTELLIGENCE</div>
+        <h1>
+          Credential<br />
+          <span class="accent">Leak Monitor</span>
+        </h1>
+        <p class="subtitle">
+          Instantly scan known dark-web breach datasets for compromised credentials
+          tied to your organisation's email domain.
+        </p>
+
+        <!-- Search Form -->
+        <div class="search-card">
+          <label for="domainInput" class="input-label">Enter company email domain</label>
+          <div class="input-row">
+            <input
+              type="text"
+              id="domainInput"
+              class="domain-input"
+              placeholder="@company.com"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Email domain"
+            />
+            <button id="searchBtn" class="search-btn" aria-label="Scan domain">
+              <span class="btn-text">Scan</span>
+              <span class="btn-icon">&#10148;</span>
+            </button>
+          </div>
+          <p id="inputError" class="input-error" role="alert" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Results Section ───────────────────────────────────────────────── -->
+    <section id="results" class="results-section hidden" aria-live="polite">
+
+      <!-- Loading state -->
+      <div id="loadingState" class="loading-state hidden">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Checking leaks&hellip;</p>
+      </div>
+
+      <!-- Results output -->
+      <div id="resultsOutput" class="hidden">
+        <div class="results-header">
+          <div>
+            <h2 id="resultsTitle" class="results-title"></h2>
+            <p id="resultsMeta" class="results-meta"></p>
+          </div>
+          <button id="clearBtn" class="clear-btn">Clear</button>
+        </div>
+
+        <!-- No results message -->
+        <div id="noResults" class="no-results hidden">
+          <span class="no-results-icon">&#10003;</span>
+          <p>No breaches found for this domain.</p>
+          <p class="no-results-sub">
+            No matching credentials were detected in our current dataset.
+          </p>
+        </div>
+
+        <!-- Results table -->
+        <div id="tableWrapper" class="table-wrapper hidden">
+          <table class="results-table" aria-label="Breached credentials">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Email Address</th>
+                <th>Compromised Password</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── About Section ─────────────────────────────────────────────────── -->
+    <section id="about" class="info-section">
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-icon">&#128274;</div>
+          <h3>What We Check</h3>
+          <p>
+            We scan a curated dataset of breach records sourced from known dark-web
+            credential dumps, matching records against your domain.
+          </p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">&#9888;</div>
+          <h3>Why It Matters</h3>
+          <p>
+            Credential stuffing is the #1 attack vector for SMEs. Knowing which
+            accounts are exposed lets you force password resets before attackers act.
+          </p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">&#128203;</div>
+          <h3>What To Do</h3>
+          <p>
+            For every match found, immediately reset the password, enable MFA,
+            and audit recent login history for suspicious activity.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ Section ───────────────────────────────────────────────────── -->
+    <section id="faq" class="faq-section">
+      <h2 class="section-heading">Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Is my search data stored?</summary>
+          <p>No. Searches are processed in-memory and not logged or retained.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How current is the dataset?</summary>
+          <p>
+            The sample dataset is for demonstration purposes. In production, it would
+            be updated continuously from threat-intelligence feeds.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What format should the domain be in?</summary>
+          <p>
+            Enter the domain with the leading <code>@</code> sign, e.g.
+            <code>@company.com</code>.
+          </p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <p>DarkWatch &mdash; For authorised security assessments only. Handle breach data responsibly.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
